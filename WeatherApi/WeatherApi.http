@@ -1,0 +1,6 @@
+﻿@WeatherApi_HostAddress = https://localhost:7295
+
+@location=tehran
+GET {{WeatherApi_HostAddress}}/WeatherForecast/{{location}}
+
+###
