@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 using WeatherApi.Clients;
 using WeatherApi.Configuration;
 using WeatherApi.Services;
@@ -21,6 +21,15 @@ builder.Services.AddHttpClient<IWeatherApiClient, VisualCrossingClient>();
 // If someone asks DI for IWeatherService, give them an instance of WeatherService.
 // Unlike AddHttpClient, AddScoped does not configure/provide a special HttpClient for the class. Otherwise It's literally the same as the one above.
 builder.Services.AddScoped<IWeatherService, WeatherService>();
+
+Console.WriteLine(
+    builder.Configuration.GetSection("Redis:ConnectionString").Value
+);
+
+// Add Redis to the Dependency injection container :
+builder.Services.AddSingleton<ConnectionMultiplexer>(
+    ConnectionMultiplexer.Connect(builder.Configuration.GetSection("Redis:ConnectionString").Value!)
+    );
 
 var app = builder.Build();
 
