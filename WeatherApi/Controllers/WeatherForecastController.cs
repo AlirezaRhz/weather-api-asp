@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using WeatherApi.Models;
 using WeatherApi.Services;
 
@@ -7,6 +8,7 @@ namespace WeatherApi
 {
     [Route("[controller]")]
     [ApiController]
+    [EnableRateLimiting("ClientLimit")]
     public class WeatherForecastController : ControllerBase
     {
         private readonly ILogger<WeatherForecastController> _logger;

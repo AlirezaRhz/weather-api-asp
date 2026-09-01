@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.RateLimiting;
 using StackExchange.Redis;
+using System.Threading.RateLimiting;
 using WeatherApi.Clients;
 using WeatherApi.Configuration;
 using WeatherApi.Services;
@@ -31,6 +33,29 @@ builder.Services.AddSingleton<ConnectionMultiplexer>(
     ConnectionMultiplexer.Connect(builder.Configuration.GetSection("Redis:ConnectionString").Value!)
     );
 
+// Add and configure rate limiting :
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("ClientLimit", httpContext =>
+    {
+        var clientId = httpContext.Request.Headers["X-Client-Id"].ToString();
+        if (string.IsNullOrEmpty(clientId))
+        {
+            clientId = httpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+        }
+
+        return RateLimitPartition.GetFixedWindowLimiter(clientId, _ =>
+                new FixedWindowRateLimiterOptions
+                {
+                    Window = TimeSpan.FromMinutes(1),
+                    PermitLimit = 20,
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                    QueueLimit = 0
+                }
+            );
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -40,6 +65,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Wire the middleware of rate limiting to the pipeline :
+app.UseRateLimiter();
 
 app.UseAuthorization();
 
