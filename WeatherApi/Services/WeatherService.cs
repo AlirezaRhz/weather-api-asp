@@ -38,8 +38,7 @@ namespace WeatherApi.Services
                 await _redis.StringSetAsync(
                     redisKey,
                     JsonSerializer.Serialize(weather),
-                    new Expiration(TimeSpan.FromMinutes(10))
-                );
+                    TimeSpan.FromMinutes(10));
 
                 return weather;
             }
