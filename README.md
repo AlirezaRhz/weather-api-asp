@@ -38,14 +38,6 @@ Configure the Visual Crossing base URL in `appsettings.json`:
 }
 ```
 
-Store your Visual Crossing API key using .NET User Secrets during development:
-
-```bash
-dotnet user-secrets set "VisualCrossing:ApiKey" "your-visual-crossing-api-key"
-```
-
-For production deployments, the API key can be supplied through environment variables or a secret manager.
-
 ### Run Redis locally with Docker
 
 ```bash
@@ -58,7 +50,7 @@ Weather data is cached in Redis to reduce unnecessary calls to the Visual Crossi
 
 - Forecasts are cached by location.
 - Cached responses are returned when available.
-- Cache entries expire after the configured TTL.
+- Cache entries expire after the configured TTL (Default is 10 minutes).
 - When a cached value is missing or expired, the API fetches fresh data and updates Redis.
 
 ## Running the API
