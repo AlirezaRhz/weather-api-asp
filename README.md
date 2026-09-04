@@ -101,3 +101,5 @@ Requests are rate-limited per client using a fixed-window policy.
 - Requests exceeding the limit receive `429 Too Many Requests`.
 
 The rate limit is configured by the `ClientLimit` policy in `Program.cs`.
+
+Project Idea From : https://roadmap.sh/projects/weather-api-wrapper-service
